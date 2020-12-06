@@ -9,7 +9,7 @@ import { getPostBySlug, getAllPosts } from '../../lib/api'
 import PostTitle from '../../components/post-title'
 import Head from 'next/head'
 import { CMS_NAME } from '../../lib/constants'
-import markdownToHtml from '../../lib/markdownToHtml'
+import { mdxToString, stringToMdx} from '../../lib/mdxSerialization'
 
 export default function Post({ post, morePosts, preview }) {
   const router = useRouter()
@@ -37,7 +37,7 @@ export default function Post({ post, morePosts, preview }) {
                 date={post.date}
                 author={post.author}
               />
-              <PostBody content={post.content} />
+              <PostBody> {stringToMdx(post.content)} </PostBody>
             </article>
           </>
         )}
@@ -56,7 +56,7 @@ export async function getStaticProps({ params }) {
     'ogImage',
     'coverImage',
   ])
-  const content = await markdownToHtml(post.content || '')
+  const content = await mdxToString(post.content || '') 
 
   return {
     props: {
